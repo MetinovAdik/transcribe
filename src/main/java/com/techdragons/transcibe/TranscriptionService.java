@@ -14,7 +14,7 @@ public class TranscriptionService {
 
     public String recognizeSpeechFromMedia(String mediaFilePath) throws IOException, InterruptedException {
         List<String> command = new ArrayList<>();
-        command.add("\\usr\\local\\bin\\python"); // Замените на полный путь к Python, если он не в PATH
+        command.add("//usr//local//bin//python"); // Замените на полный путь к Python, если он не в PATH
         command.add("-m");
         command.add("whisper");
         command.add(mediaFilePath);
