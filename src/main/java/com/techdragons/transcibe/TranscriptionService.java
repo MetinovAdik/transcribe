@@ -19,9 +19,9 @@ public class TranscriptionService {
         command.add("whisper");
         command.add(mediaFilePath);
         command.add("--model");
-        command.add("small"); // Используем модель medium для баланса между скоростью и точностью
-        //command.add("--task");
-        //command.add("translate"); // Добавляем задачу перевода на английский
+        command.add("medium"); // Используем модель medium для баланса между скоростью и точностью
+        command.add("--task");
+        command.add("translate"); // Добавляем задачу перевода на английский
 
         ProcessBuilder builder = new ProcessBuilder(command);
         Process process = builder.start();
