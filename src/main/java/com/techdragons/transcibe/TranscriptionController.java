@@ -1,4 +1,5 @@
 package com.techdragons.transcibe;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+@Slf4j
 @RestController
 public class TranscriptionController {
 
@@ -31,6 +34,7 @@ public class TranscriptionController {
             Files.delete(downloadedFile);
             return new ResponseEntity<>(transcription, HttpStatus.OK);
         } catch (Exception e) {
+            log.error("Enter transcribe",e);
             return new ResponseEntity<>("Error processing the media file", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
