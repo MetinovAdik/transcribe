@@ -13,6 +13,16 @@ import java.util.List;
 public class TranscriptionService {
 
     public String recognizeSpeechFromMedia(String mediaFilePath) throws IOException, InterruptedException {
+        log.info("Checking Python installation...");
+        if (!isPythonInstalled()) {
+            throw new IOException("Python is not installed.");
+        }
+
+        log.info("Checking Whisper module availability...");
+        if (!isWhisperInstalled()) {
+            throw new IOException("Whisper module is not installed.");
+        }
+
         log.info("Starting speech recognition for file: {}", mediaFilePath);
 
         List<String> command = new ArrayList<>();
@@ -50,5 +60,20 @@ public class TranscriptionService {
         log.info("Speech recognition completed successfully.");
         log.info(String.valueOf(output));
         return output.toString().trim();
+    }
+
+    private boolean isPythonInstalled() throws IOException, InterruptedException {
+        return runSimpleCommand("python", "--version");
+    }
+
+    private boolean isWhisperInstalled() throws IOException, InterruptedException {
+        return runSimpleCommand("python", "-c", "import whisper; print(whisper.__version__)");
+    }
+
+    private boolean runSimpleCommand(String... command) throws IOException, InterruptedException {
+        ProcessBuilder builder = new ProcessBuilder(command);
+        Process process = builder.start();
+        int exitCode = process.waitFor();
+        return exitCode == 0;
     }
 }
