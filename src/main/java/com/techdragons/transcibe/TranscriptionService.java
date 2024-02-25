@@ -1,18 +1,20 @@
 package com.techdragons.transcibe;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
 public class TranscriptionService {
-
-    public String recognizeSpeechFromMedia(String mediaFilePath) throws IOException, InterruptedException {
+    @Async
+    public CompletableFuture<String> recognizeSpeechFromMedia(String mediaFilePath) throws IOException, InterruptedException {
         log.info("Checking Python installation...");
         if (!isPythonInstalled()) {
             throw new IOException("Python is not installed.");
@@ -59,7 +61,7 @@ public class TranscriptionService {
 
         log.info("Speech recognition completed successfully.");
         log.info(String.valueOf(output));
-        return output.toString().trim();
+        return CompletableFuture.completedFuture(output.toString().trim());
     }
 
     private boolean isPythonInstalled() throws IOException, InterruptedException {
