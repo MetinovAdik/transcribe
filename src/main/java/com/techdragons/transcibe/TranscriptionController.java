@@ -30,7 +30,10 @@ public class TranscriptionController {
         }
         try {
             Path downloadedFile = fileDownloadService.downloadMedia(request.getMediaUrl(), request.getMediaType());
+            System.out.println("Successfully downloaded file");
             String transcription = transcriptionService.recognizeSpeechFromMedia(downloadedFile.toString());
+            System.out.println("Successfully transcribed file");
+            System.out.println(transcription);
             Files.delete(downloadedFile);
             return new ResponseEntity<>(transcription, HttpStatus.OK);
         } catch (Exception e) {
