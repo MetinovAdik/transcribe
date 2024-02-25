@@ -1,49 +1,53 @@
 package com.techdragons.transcibe;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+@Slf4j
 @Service
 public class TranscriptionService {
 
     public String recognizeSpeechFromMedia(String mediaFilePath) throws IOException, InterruptedException {
+        log.info("Starting speech recognition for file: {}", mediaFilePath);
+
         List<String> command = new ArrayList<>();
-        command.add("python"); // Замените на полный путь к Python, если он не в PATH
+        command.add("python");
         command.add("-m");
         command.add("whisper");
         command.add(mediaFilePath);
         command.add("--model");
-        command.add("medium"); // Используем модель medium для баланса между скоростью и точностью
+        command.add("medium");
         command.add("--task");
-        command.add("translate"); // Добавляем задачу перевода на английский
+        command.add("translate");
+
+        log.info("Command for process builder: {}", command);
 
         ProcessBuilder builder = new ProcessBuilder(command);
         Process process = builder.start();
 
+        log.info("Process started, reading output...");
+
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        StringBuilder filteredOutput = new StringBuilder();
+        StringBuilder output = new StringBuilder();
         String line;
-        Pattern pattern = Pattern.compile("\\]\\s+(.+)$"); // Регулярное выражение может потребовать настройки
 
         while ((line = reader.readLine()) != null) {
-            Matcher matcher = pattern.matcher(line);
-            if (matcher.find()) {
-                // Добавляем только распознанный и переведенный текст, исключая всё остальное
-                filteredOutput.append(matcher.group(1)).append("\n");
-            }
+            log.debug("Read line: {}", line);
+            output.append(line).append("\n");
         }
 
         int exitCode = process.waitFor();
         if (exitCode != 0) {
+            log.error("Whisper exited with error code: {}", exitCode);
             throw new IOException("Whisper exited with error code: " + exitCode);
         }
 
-        return filteredOutput.toString().trim(); // Возвращаем фильтрованный и переведенный текст
+        log.info("Speech recognition completed successfully.");
+        return output.toString().trim();
     }
 }
