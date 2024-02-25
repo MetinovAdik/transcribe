@@ -48,6 +48,7 @@ public class TranscriptionService {
         }
 
         log.info("Speech recognition completed successfully.");
+        log.info(String.valueOf(output));
         return output.toString().trim();
     }
 }
