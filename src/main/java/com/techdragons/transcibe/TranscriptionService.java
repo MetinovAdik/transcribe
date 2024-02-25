@@ -26,7 +26,7 @@ public class TranscriptionService {
         log.info("Starting speech recognition for file: {}", mediaFilePath);
 
         List<String> command = new ArrayList<>();
-        command.add("/usr/bin/python");
+        command.add("python");
         command.add("-m");
         command.add("whisper");
         command.add(mediaFilePath);
